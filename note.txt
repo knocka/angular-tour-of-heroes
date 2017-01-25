@@ -1,0 +1,26 @@
+
+
+i i run to similar issue with you.
+
+While i'm not sure how to properly fix this issue but let me share my workaround.
+
+First.
+You may want to update your SHELL env var by pointing it to your git bash location.
+export SHELL="/c/Program Files/Git/bin/bash"
+change the path to where your git bash location.
+
+If up until this point you succeed then no need to change anything else. If not (I'm not). Then there is a problem in path resolve process. when you look deep inside spawn-default-shell/src/get-shell.js Node Modules they are trying to compare our SHELL path with common shell regex.
+const DETECT_SH_REGEX = /sh$/;
+that variable assume that all shell name must end with "sh" while in our case it turns out to be
+C:\Program Files\Git\bin\bash.exe
+which means ends with "sh.exe" then it trows an error.
+
+so the solution is change
+const DETECT_SH_REGEX = /sh$/;
+to
+const DETECT_SH_REGEX = /sh/;
+
+Hope that helps, pardon me if i wrongly explain something.
+
+For more detailed explanation or complete solution please look here:
+github.com/kimmobrunfeldt/spawn-default-shell/issues/6
